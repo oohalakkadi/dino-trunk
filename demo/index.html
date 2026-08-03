@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>dino-trunk — live demo</title>
+<link rel="icon" type="image/svg+xml" href="../assets/logo.svg" />
+<style>
+  :root {
+    --green: #37b24d;
+    --green-dark: #2f9e44;
+    --green-light: #69db7c;
+    --mint: #d3f9d8;
+    --ink: #1b2a20;
+    --muted: #5c6b60;
+    --card: #ffffff;
+    --bg: #f4fbf5;
+    --line: #dfe9e1;
+    --chip: #eef6f0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #e9f5ec; --muted: #9db4a4; --card: #16211a;
+      --bg: #0e1712; --line: #24352a; --chip: #1c2a21; --mint: #1c3325;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+    display: flex; flex-direction: column; align-items: center;
+    min-height: 100vh; padding: 40px 20px;
+  }
+  .wrap { width: 100%; max-width: 760px; }
+  header { text-align: center; margin-bottom: 8px; }
+  header img { width: 88px; height: 88px; }
+  h1 { font-size: 2.2rem; margin: 10px 0 2px; letter-spacing: -0.02em; }
+  .tag { color: var(--muted); margin: 0 0 4px; }
+  .links a {
+    color: var(--green-dark); text-decoration: none; font-weight: 600;
+    font-size: 0.9rem; margin: 0 8px;
+  }
+  .links a:hover { text-decoration: underline; }
+
+  .card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 18px; padding: 26px; margin-top: 26px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  }
+  .hint { color: var(--muted); font-size: 0.92rem; margin: 0 0 18px; }
+  .hint b { color: var(--ink); }
+
+  /* the resizable stage */
+  .stage {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px; border: 2px dashed var(--green-light); border-radius: 14px;
+    background: var(--mint);
+    width: 100%; min-width: 150px; max-width: 100%;
+    overflow: hidden; resize: horizontal;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 14px; border: none; border-radius: 10px;
+    background: var(--green); color: #fff; font: inherit; font-weight: 600;
+    font-size: 0.9rem; white-space: nowrap; cursor: pointer; flex: 0 0 auto;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.08);
+  }
+  .btn:nth-child(2) { background: var(--green-dark); }
+  .btn:nth-child(3) { background: #e8590c; box-shadow: 0 2px 0 rgba(0,0,0,0.08); }
+  .btn .ico { font-size: 1.05rem; line-height: 1; }
+  .btn .lbl:empty { display: none; }
+  .chev {
+    margin-left: auto; flex: 0 0 auto;
+    width: 34px; height: 34px; border-radius: 8px;
+    display: grid; place-items: center; color: var(--muted);
+    background: rgba(0,0,0,0.04); font-size: 1.1rem;
+  }
+
+  .controls { margin-top: 18px; display: flex; align-items: center; gap: 14px; }
+  .controls input[type=range] { flex: 1; accent-color: var(--green); }
+  .readout {
+    font-variant-numeric: tabular-nums; font-weight: 700; color: var(--green-dark);
+    min-width: 92px; text-align: right; font-size: 0.95rem;
+  }
+
+  .levels { margin-top: 22px; display: grid; gap: 12px; }
+  .levelrow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .levelrow .name { width: 70px; color: var(--muted); font-size: 0.85rem; font-weight: 600; }
+  .chip {
+    padding: 4px 10px; border-radius: 999px; font-size: 0.82rem;
+    background: var(--chip); color: var(--muted); border: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  .chip.icononly { font-style: italic; }
+  .chip.active {
+    background: var(--green); color: #fff; border-color: var(--green);
+    box-shadow: 0 2px 8px rgba(55,178,77,0.4);
+  }
+
+  .note {
+    margin-top: 22px; font-size: 0.88rem; color: var(--muted);
+    border-left: 3px solid var(--green-light); padding: 4px 0 4px 14px;
+  }
+  code {
+    background: var(--chip); padding: 1px 6px; border-radius: 6px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.85em;
+  }
+  pre {
+    background: var(--chip); border: 1px solid var(--line); border-radius: 12px;
+    padding: 14px 16px; overflow-x: auto; font-size: 0.85rem; margin-top: 26px;
+  }
+  pre code { background: none; padding: 0; }
+  footer { color: var(--muted); font-size: 0.82rem; margin-top: 30px; text-align: center; }
+  footer a { color: var(--green-dark); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img src="../assets/logo.svg" alt="dino-trunk logo" />
+    <h1>dino-trunk</h1>
+    <p class="tag">Labels that know when to shrink their trunk. 🦕🐘</p>
+    <p class="links">
+      <a href="https://github.com/oohalakkadi/dino-trunk">GitHub</a>
+      <a href="https://www.npmjs.com/package/dino-trunk">npm</a>
+    </p>
+  </header>
+
+  <div class="card">
+    <p class="hint">
+      Drag the handle at the <b>bottom-right corner</b> of the toolbar — or use the
+      slider — to shrink the space. Each button retracts its label through its
+      checkpoints, down to icon-only, and grows back when there's room.
+    </p>
+
+    <div class="stage" id="stage">
+      <button class="btn" data-collapsing data-variants="Save changes|Save|">
+        <span class="ico">💾</span><span class="lbl">Save changes</span>
+      </button>
+      <button class="btn" data-collapsing data-variants="Export as PDF|Export|">
+        <span class="ico">⬇️</span><span class="lbl">Export as PDF</span>
+      </button>
+      <button class="btn" data-collapsing data-variants="Delete forever|Delete|">
+        <span class="ico">🗑️</span><span class="lbl">Delete forever</span>
+      </button>
+      <span class="chev" title="a fixed, non-collapsing sibling">⋯</span>
+    </div>
+
+    <div class="controls">
+      <input type="range" id="slider" min="180" max="720" value="720" />
+      <span class="readout"><span id="w">720</span> px</span>
+    </div>
+
+    <div class="levels" id="levels"></div>
+
+    <p class="note">
+      Notice the labels don't <em>flicker</em> when you park the width right on a
+      boundary — that's the built-in <b>hysteresis</b>: a label shrinks the moment
+      it stops fitting, but only grows back once there's clearly room again.
+    </p>
+  </div>
+
+  <pre><code>import { useRef } from 'react';
+import { useCollapsingLabel } from 'dino-trunk';
+
+const ref = useRef&lt;HTMLButtonElement&gt;(null);
+const label = useCollapsingLabel(ref, ['Save changes', 'Save', '']);
+// &lt;button ref={ref}&gt;💾 {label}&lt;/button&gt;</code></pre>
+
+  <footer>
+    Built with <a href="https://github.com/oohalakkadi/dino-trunk">dino-trunk</a> —
+    the same tiny hook, ported to vanilla JS for this demo. MIT © Ooha Reddy.
+  </footer>
+</div>
+
+<script>
+  // ── the pure core, straight from src/collapsingLabels.ts ──────────────
+  const DEFAULT_SLACK = { shrinkSlack: 6, unshrinkSlack: 20 };
+  const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
+
+  function pickLevelStep(cur, widths, avail, slack) {
+    for (let i = 0; i < widths.length; i++) {
+      if (cur <= i && avail < widths[i] + slack.shrinkSlack) {
+        return Math.min(i + 1, widths.length - 1);
+      } else if (cur > i && avail > widths[i] + slack.unshrinkSlack) {
+        return i;
+      }
+    }
+    return cur;
+  }
+  function pickLevel(cur, widths, avail, slack = DEFAULT_SLACK) {
+    if (!widths.length) return 0;
+    let lvl = clamp(cur, 0, widths.length - 1);
+    for (let g = 0; g < widths.length; g++) {
+      const next = pickLevelStep(lvl, widths, avail, slack);
+      if (next === lvl) break;
+      lvl = next;
+    }
+    return lvl;
+  }
+  function availableWidthPerItem({ containerWidth, totalGap, reservedWidth, truncatingCount, reservedPadding = 0 }) {
+    const count = Math.max(1, truncatingCount);
+    return Math.max(0, (containerWidth - totalGap - reservedWidth) / count - reservedPadding);
+  }
+
+  // ── measurement (canvas), same as the hook ─────────────────────────────
+  const _cv = document.createElement('canvas');
+  const _ctx = _cv.getContext('2d');
+  const ICON_SPACE = 24;
+  function measure(text, el) {
+    const s = getComputedStyle(el);
+    _ctx.font = `${s.fontWeight} ${s.fontSize} ${s.fontFamily}`;
+    const w = _ctx.measureText(text).width;
+    const pad = parseFloat(s.paddingLeft) + parseFloat(s.paddingRight);
+    return Math.ceil(w + pad + ICON_SPACE);
+  }
+
+  const stage = document.getElementById('stage');
+  const levelsEl = document.getElementById('levels');
+  const buttons = [...stage.querySelectorAll('[data-collapsing]')].map((el) => ({
+    el,
+    lbl: el.querySelector('.lbl'),
+    variants: el.dataset.variants.split('|'),
+    level: 0,
+  }));
+
+  // build the checkpoint chips
+  for (const b of buttons) {
+    const row = document.createElement('div');
+    row.className = 'levelrow';
+    row.innerHTML = `<span class="name">${b.variants[0].split(' ')[0]}</span>`;
+    b.chips = b.variants.map((v, i) => {
+      const c = document.createElement('span');
+      c.className = 'chip' + (v === '' ? ' icononly' : '');
+      c.textContent = v === '' ? 'icon only' : v;
+      row.appendChild(c);
+      return c;
+    });
+    levelsEl.appendChild(row);
+  }
+
+  function recompute() {
+    const containerWidth = stage.getBoundingClientRect().width;
+    const gap = parseFloat(getComputedStyle(stage).columnGap) || 0;
+    const children = [...stage.children];
+    const totalGap = gap * Math.max(0, children.length - 1);
+    const truncating = new Set(buttons.map((b) => b.el));
+    const reservedWidth = children
+      .filter((c) => !truncating.has(c))
+      .reduce((s, c) => s + c.getBoundingClientRect().width, 0);
+
+    const perItem = availableWidthPerItem({
+      containerWidth, totalGap, reservedWidth, truncatingCount: truncating.size,
+    });
+
+    for (const b of buttons) {
+      const widths = b.variants.map((v) => measure(v, b.el));
+      b.level = pickLevel(b.level, widths, perItem);
+      b.lbl.textContent = b.variants[b.level];
+      b.chips.forEach((c, i) => c.classList.toggle('active', i === b.level));
+    }
+    document.getElementById('w').textContent = Math.round(containerWidth);
+  }
+
+  // slider drives the stage width; ResizeObserver reacts to that and to the
+  // native corner-drag alike.
+  const slider = document.getElementById('slider');
+  slider.addEventListener('input', () => { stage.style.width = slider.value + 'px'; });
+  new ResizeObserver(() => requestAnimationFrame(recompute)).observe(stage);
+  recompute();
+</script>
+</body>
+</html>

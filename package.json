@@ -1,0 +1,64 @@
+{
+  "name": "dino-trunk",
+  "version": "0.1.0",
+  "description": "Responsive, width-aware button-label collapse for React — shrink labels through shorter variants down to icon-only as space runs out, with anti-flicker hysteresis. Zero runtime dependencies; pure, testable core.",
+  "keywords": [
+    "react",
+    "hook",
+    "responsive",
+    "truncate",
+    "truncation",
+    "ellipsis",
+    "resize",
+    "resizeobserver",
+    "label",
+    "button",
+    "toolbar",
+    "overflow",
+    "hysteresis"
+  ],
+  "license": "MIT",
+  "author": "Ooha Reddy",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oohalakkadi/dino-trunk.git"
+  },
+  "homepage": "https://github.com/oohalakkadi/dino-trunk#readme",
+  "bugs": "https://github.com/oohalakkadi/dino-trunk/issues",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
+    "build": "npm run clean && tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "react": "^18.3.1",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
+  }
+}
