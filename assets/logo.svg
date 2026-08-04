@@ -13,10 +13,10 @@
   <rect x="64" y="100" width="11" height="20" rx="5.5" fill="#2f9e44"/>
   <rect x="86" y="100" width="11" height="20" rx="5.5" fill="#2f9e44"/>
 
-  <!-- stegosaurus back plates -->
-  <path d="M70 63 l6 -13 6 13 Z" fill="#69db7c"/>
-  <path d="M84 60 l7 -14 7 14 Z" fill="#69db7c"/>
-  <path d="M100 63 l6 -13 6 13 Z" fill="#69db7c"/>
+  <!-- stegosaurus back plates: bases overlap the body's top edge so they read as rooted -->
+  <path d="M68 64 l5 -13 5 13 Z" fill="#69db7c"/>
+  <path d="M78 63 l5 -15 5 15 Z" fill="#69db7c"/>
+  <path d="M88 64 l5 -13 5 13 Z" fill="#69db7c"/>
 
   <!-- neck -->
   <path d="M58 86 C46 80 44 64 49 52 L66 58 C64 70 66 80 72 86 Z" fill="#37b24d"/>
@@ -24,9 +24,10 @@
   <!-- elephant trunk: a bold tube curling off the snout, tip curled up -->
   <path d="M50 50 C33 54 24 70 28 86 C30 95 27 103 20 106"
         fill="none" stroke="#37b24d" stroke-width="15" stroke-linecap="round"/>
-  <!-- trunk rings -->
-  <path d="M22 60 q9 3 9 12" fill="none" stroke="#2f9e44" stroke-width="3" stroke-linecap="round"/>
-  <path d="M19 82 q9 3 9 12" fill="none" stroke="#2f9e44" stroke-width="3" stroke-linecap="round"/>
+  <!-- trunk rings: short creases perpendicular to the trunk centerline -->
+  <path d="M30 53 Q35 58 40 63" fill="none" stroke="#2f9e44" stroke-width="3" stroke-linecap="round"/>
+  <path d="M20 73 Q27 74 35 75" fill="none" stroke="#2f9e44" stroke-width="3" stroke-linecap="round"/>
+  <path d="M20 95 Q27 98 34 101" fill="none" stroke="#2f9e44" stroke-width="3" stroke-linecap="round"/>
 
   <!-- head -->
   <circle cx="52" cy="46" r="16" fill="#37b24d"/>
